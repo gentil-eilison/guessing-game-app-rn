@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "white",
-        textAlign: "center"
+        textAlign: "center",
+        fontFamily: "inter_regular"
     },
     pressed: {
         opacity: 0.75

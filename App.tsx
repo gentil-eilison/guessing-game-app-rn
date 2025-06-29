@@ -5,10 +5,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import Colors from './constants/colors';
 import GameOverScreen from './screens/GameOverScreen';
+import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 
 export default function App() {
-  const [userNumber, setUserNumber] = useState<number | undefined>();
+  const [userNumber, setUserNumber] = useState<number | null>();
   const [gameIsOver, setGameIsOver] = useState<boolean>(true);
+  const [guessRounds, setGuessRounds] = useState<number>(0);
+
+  let [fontsLoaded] = useFonts({
+    "inter_regular": Inter_400Regular,
+    "inter_bold": Inter_700Bold
+  })
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   function pickedNumberHandler(pickedNumber: number) {
     setUserNumber(pickedNumber);
@@ -23,11 +34,16 @@ export default function App() {
   }
 
   if (gameIsOver && userNumber) {
-    screen = <GameOverScreen />
+    screen = <GameOverScreen userNumber={userNumber} roundsNumber={guessRounds} onStartNewGame={startNewGameHandler} />
   }
 
   function gameOverHandler() {
     setGameIsOver(true);
+  }
+
+  function startNewGameHandler() {
+    setUserNumber(null);
+    setGuessRounds(0);
   }
 
   return (
