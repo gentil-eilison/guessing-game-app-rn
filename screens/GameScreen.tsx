@@ -1,4 +1,10 @@
-import { View, StyleSheet, Alert, FlatList, Text } from "react-native";
+import { 
+    View, 
+    StyleSheet, 
+    Alert, 
+    FlatList, 
+    useWindowDimensions 
+} from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 import Title from "../components/ui/Title";
@@ -40,6 +46,7 @@ export default function GameScreen(
     );
     const [currentGuess, setCurrentGuess] = useState<number>(initialGuess);
     const [guessRounds, setGuessRounds] = useState([initialGuess]);
+    const { width, height } = useWindowDimensions();
 
     useEffect(() => {
         if (currentGuess === userNumber) {
@@ -81,10 +88,8 @@ export default function GameScreen(
     }
 
     const guessRoundsListLength = guessRounds.length;
-
-    return (
-        <View style={styles.screen}>
-            <Title>Oponent's Guess</Title>
+    let content = (
+        <>
             <NumberContainer>{ currentGuess }</NumberContainer>
             <Card>
                 <InstructionText 
@@ -117,6 +122,45 @@ export default function GameScreen(
                     </View>
                 </View>
             </Card>
+        </>
+    );
+
+    if (width > 500) {
+        content = (
+            <>
+                <View style={styles.buttonsContainerWide}>
+                    <View style={styles.buttonContainer}>
+                        <PrimaryButton 
+                            onPress={() => nextGuessHandler("lower")}
+                        >
+                            <FontAwesome5 
+                                name="minus-circle" 
+                                size={24} 
+                                color="white" 
+                            />
+                        </PrimaryButton>
+                    </View>
+                    <NumberContainer>{ currentGuess }</NumberContainer>
+                    <View style={styles.buttonContainer}>
+                        <PrimaryButton 
+                            onPress={() => nextGuessHandler("greater")}
+                        >
+                            <FontAwesome5 
+                                name="plus-circle" 
+                                size={24} 
+                                color="white"
+                            />
+                        </PrimaryButton>
+                    </View>
+                </View>
+            </>
+        );
+    }
+
+    return (
+        <View style={styles.screen}>
+            <Title>Oponent's Guess</Title>
+            { content }
             <View style={styles.listContainer}>
                 <FlatList 
                     data={guessRounds} 
@@ -137,13 +181,18 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         padding: 24,
-        marginTop: 30
+        marginTop: 30,
+        alignItems: "center"
     },
     instructionText: {
         marginBottom: 12
     },
     buttonsContainer: {
         flexDirection: "row"
+    },
+    buttonsContainerWide: {
+        flexDirection: "row",
+        alignItems: "center"
     },
     buttonContainer: {
         flex: 1
